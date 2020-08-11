@@ -7,7 +7,9 @@ typedef struct {
   int radius, x, y;
 } Meteor;
 typedef struct {
-  unsigned int started, w, h;
+  int state, w, h;
   SDL_Texture *spaceTexture;
+  SDL_Texture *fontTexture;
+  TTF_Font *font;
 } Game;
 
