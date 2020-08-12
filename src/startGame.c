@@ -14,14 +14,9 @@ void startGame(SDL_Renderer *renderer, Game *game) {
   SDL_RenderPresent(renderer);
 
   SDL_FreeSurface(surface);
-  
-  SDL_Delay(5000);
-  //while (!game->state) {
-  //  events(game);
-  //}
-  //switch (game->state) {
-  //  case 1: startGame(renderer, game);
-  //  case 2: return;
-  //}
+
+  while (game->state == 1) {
+    events(game);
+  }
 }
 

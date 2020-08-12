@@ -8,7 +8,7 @@ int main() {
   SDL_Window *window;
   SDL_Renderer *renderer;
   Game game;
-  game.w =  640;
+  game.w = 640;
   game.h = 480;
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
   TTF_Init();
