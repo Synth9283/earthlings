@@ -1,4 +1,4 @@
 #pragma once
 
-void startGame(Game *game);
+void startGame(SDL_Renderer *renderer, Game *game);
 

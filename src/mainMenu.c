@@ -34,7 +34,7 @@ void mainMenu(SDL_Renderer *renderer, Game *game) {
     events(game);
   }
   switch (game->state) {
-    case 1: startGame(game);
+    case 1: startGame(renderer, game);
     case 2: return;
   }
 }
