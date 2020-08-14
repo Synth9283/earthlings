@@ -6,10 +6,12 @@ typedef struct {
   SDL_Texture *planetTexture;
 } Planet;
 typedef struct {
-  int radius, x, y;
+  int radius, x, y, health;
+  SDL_Surface *metorSurface;
+  SDL_Texture *metorTexture;
 } Meteor;
 typedef struct {
-  int state, w, h;
+  int state, w, h, wave;
   SDL_Surface *spaceSurface;
   SDL_Texture *spaceTexture, *fontTexture;
   TTF_Font *font;
