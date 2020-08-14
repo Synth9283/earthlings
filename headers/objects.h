@@ -1,16 +1,18 @@
 #pragma once
 
 typedef struct {
-  int radius, x, y, lives;
-} Earth;
+  int radius, x, y, w, h, lives;
+  SDL_Surface *planetSurface;
+  SDL_Texture *planetTexture;
+} Planet;
 typedef struct {
   int radius, x, y;
 } Meteor;
 typedef struct {
-  int state, w, h, planetW, planetH;
-  SDL_Texture *spaceTexture;
-  SDL_Texture *planetTexture;
-  SDL_Texture *fontTexture;
+  int state, w, h;
+  SDL_Surface *spaceSurface;
+  SDL_Texture *spaceTexture, *fontTexture;
   TTF_Font *font;
+  Planet *planet;
 } Game;
 

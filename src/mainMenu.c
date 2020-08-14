@@ -4,11 +4,12 @@
 #include "../headers/objects.h"
 #include "../headers/events.h"
 #include "../headers/startGame.h"
+#include "../headers/fps.h"
 
 void mainMenu(SDL_Renderer *renderer, Game *game) {
   game->state = 0;
-  SDL_Surface *spaceSurface = IMG_Load("img/space.png");
-  game->spaceTexture = SDL_CreateTextureFromSurface(renderer, spaceSurface);
+  game->spaceSurface = IMG_Load("img/space.png");
+  game->spaceTexture = SDL_CreateTextureFromSurface(renderer, game->spaceSurface);
   //game->font = TTF_OpenFont("fonts/pixel/advanced_pixel-7.ttf", 48);
   //if (game->font == NULL) printf("Failed to find font");
   SDL_Rect rect = {0, 0, game->w, game->h};
@@ -27,12 +28,15 @@ void mainMenu(SDL_Renderer *renderer, Game *game) {
   //SDL_DestroyTexture(game->fontTexture);
   //TTF_CloseFont(game->font);
   //SDL_FreeSurface(fontSurface);
-  SDL_FreeSurface(spaceSurface);
+  SDL_FreeSurface(game->spaceSurface);
 
   // 0 menu, 1 started, 2 quit
   while (!game->state) {
+    Uint32 ticks = SDL_GetTicks();
     events(game);
+    fps(ticks);
   }
+
   switch (game->state) {
     case 1: startGame(renderer, game);
     case 2: return;
