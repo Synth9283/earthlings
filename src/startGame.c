@@ -5,6 +5,7 @@
 #include "../headers/events.h"
 #include "../headers/process.h"
 #include "../headers/fps.h"
+#include "../headers/meteors.h"
 
 void startGame(SDL_Renderer *renderer, Game *game) {
   Planet planet;
@@ -14,10 +15,17 @@ void startGame(SDL_Renderer *renderer, Game *game) {
   renderPlanet(renderer, game);
   renderPresent(renderer);
 
+  Meteor meteor;
+  game->meteors = &meteor;
+  spawnMeteor(game, game->meteors);
+  
+  unsigned int tickCount = 0;
+
   while (game->state == 1) {
     Uint32 ticks = SDL_GetTicks();
     process(renderer, game);
     events(game);
+    tickCount = updateMeteor(game, &meteor, tickCount);
     fps(ticks);
   }
 }
