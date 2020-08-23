@@ -1,2 +1,2 @@
 # earthlings
- A simple earth defender game!
+    A simple earth defender game!
