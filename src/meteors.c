@@ -5,7 +5,8 @@
 
 #define PI 3.14159265
 
-void spawnMeteor(Game *game, Meteor *meteor) {
+void spawnMeteor(Game *game) {
+    Meteor *meteor = malloc(sizeof(Meteor));
     unsigned int spawn = rand()%4;
     switch (spawn) {
         case 1:
@@ -25,35 +26,79 @@ void spawnMeteor(Game *game, Meteor *meteor) {
             meteor->y = rand()%game->h-50;
             break;
     }
-    printf("X: %d, Y: %d\n", meteor->x, meteor->y);
-    //meteor->x = rand()%game->w;
-    //meteor->y = rand()%game->h;
     meteor->w = 64;
     meteor->h = 64;
+    meteor->radius = meteor->w/2;
     meteor->health = 1;
     meteor->textureCount = 1;
-    meteor->angle = atan2((game->h/2-meteor->y), (meteor->x/2-game->h))*(180/PI);
-    printf("%f\n", meteor->angle);
+    meteor->angle = atan2(game->planet->y-meteor->y, game->planet->x-meteor->x)*(180/PI);
+    meteor->prev = NULL;
+
+    if (game->meteors) {
+        meteor->next = game->meteors->next;
+        game->meteors = meteor;
+    }
+    else {
+        meteor->next = NULL;
+        game->meteors = meteor;
+    }
 }
 
-unsigned int updateMeteor(Game *game, Meteor *meteor, unsigned int tickCount) {
+int checkMeteor(Planet *planet, Meteor *meteor) {
+    int dx = planet->x - meteor->x;
+    int dy = planet->y - meteor->y;
+    int distance = sqrt((dx*dx)+(dy*dy));
+    if (distance > (planet->radius+meteor->radius)) return 1;
+    else return 0;
+}
+
+void destroyMeteor(Meteor *meteor) {
+    Meteor *tmp = (Meteor*)meteor->prev;
+    tmp->next = meteor->next;
+    free(meteor);
+}
+
+void moveMeteor(Game *game, Meteor *meteor) {
+    Meteor *tmp = game->meteors;
+    while (tmp) {
+        if (meteor->x > game->planet->x) meteor->x -= 5;
+        else if (meteor->x < game->planet->x) meteor->x += 5;
+        if (meteor->y > game->planet->y) meteor->y -= 2.5;
+        else if (meteor->y < game->planet->y) meteor->y += 2.5;
+        tmp = (Meteor*)tmp->next;
+    }
+    switch (checkMeteor(game->planet, meteor)) {
+        // meteor didn't hit = 0, meteor hit = 1
+        case 0:
+            destroyMeteor(meteor);
+            break;
+        case 1: break;
+    }
+}
+
+unsigned int updateMeteor(Game *game, unsigned int tickCount) {
+    Meteor *tmp = game->meteors;
     switch (tickCount) {
         case 15:
-            tickCount = 0;
-            switch (meteor->textureCount) {
-            case 1:
-                meteor->textureCount++;
-                break;
-            case 2:
-                meteor->textureCount++;
-                break;
-            case 3:
-                meteor->textureCount--;
-                break;
-            default:
-                meteor->textureCount = 0;
-                break;
+            while (tmp) {
+                switch (tmp->textureCount) {
+                    case 1:
+                        tmp->textureCount++;
+                        break;
+                    case 2:
+                        tmp->textureCount++;
+                        break;
+                    case 3:
+                        tmp->textureCount--;
+                        break;
+                    default:
+                        tmp->textureCount = 0;
+                        break;
+                }
+                moveMeteor(game, tmp);
+                tmp = (Meteor*)tmp->next;
             }
+            tickCount = 0;
             break;
         default:
             tickCount++;

@@ -55,3 +55,4 @@ dkms.conf
 earthlings
 build
 autom4te.cache
+.vscode

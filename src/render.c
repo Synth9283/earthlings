@@ -14,27 +14,31 @@ void renderSpace(SDL_Renderer *renderer, Game *game) {
 void renderPlanet(SDL_Renderer *renderer, Game *game) {
     game->planet->planetSurface = IMG_Load("../img/planets/Earth.png");
     game->planet->planetTexture = SDL_CreateTextureFromSurface(renderer, game->planet->planetSurface);
-    SDL_Rect planetRect = {(game->w-game->planet->w)/2, (game->h-game->planet->h)/2, game->planet->w, game->planet->h};
+    SDL_Rect planetRect = {game->planet->x, game->planet->y, game->planet->w, game->planet->h};
     SDL_RenderCopyEx(renderer, game->planet->planetTexture, NULL, &planetRect, 0, NULL, 0);
     SDL_FreeSurface(game->planet->planetSurface);
 }
 
 void renderMeteor(SDL_Renderer *renderer, Meteor *meteor) {
-    switch (meteor->textureCount) {
-        case 1:
-        meteor->meteorSurface = IMG_Load("../img/meteor/Meteor1.png");
-        break;
-        case 2:
-            meteor->meteorSurface = IMG_Load("../img/meteor/Meteor2.png");
-            break;
-        case 3:
-            meteor->meteorSurface = IMG_Load("../img/meteor/Meteor3.png");
-            break;
+    Meteor *tmp = (struct Meteor*)meteor;
+    while (tmp) {
+        switch (tmp->textureCount) {
+            case 1:
+                tmp->meteorSurface = IMG_Load("../img/meteor/Meteor1.png");
+                break;
+            case 2:
+                tmp->meteorSurface = IMG_Load("../img/meteor/Meteor2.png");
+                break;
+            case 3:
+                tmp->meteorSurface = IMG_Load("../img/meteor/Meteor3.png");
+                break;
+        }
+        tmp->meteorTexture = SDL_CreateTextureFromSurface(renderer, tmp->meteorSurface);
+        SDL_Rect meteorRect = {tmp->x, tmp->y, tmp->w, tmp->h};
+        SDL_RenderCopyEx(renderer, tmp->meteorTexture, NULL, &meteorRect, tmp->angle, NULL, 0);
+        SDL_FreeSurface(tmp->meteorSurface);
+        tmp = tmp->next;
     }
-    meteor->meteorTexture = SDL_CreateTextureFromSurface(renderer, meteor->meteorSurface);
-    SDL_Rect meteorRect = {meteor->x, meteor->y, meteor->w, meteor->h};
-    SDL_RenderCopyEx(renderer, meteor->meteorTexture, NULL, &meteorRect, meteor->angle, NULL, 0);
-    SDL_FreeSurface(meteor->meteorSurface);
 }
 
 void renderPresent(SDL_Renderer *renderer) {
