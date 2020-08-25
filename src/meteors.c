@@ -52,31 +52,42 @@ int checkMeteor(Planet *planet, Meteor *meteor) {
     else return 0;
 }
 
-void destroyMeteor(Meteor *meteor) {
-    Meteor *tmp = (Meteor*)meteor->prev;
-    tmp->next = meteor->next;
+void destroyMeteor(Game *game, Meteor *meteor) {
+    Meteor *next = (Meteor*)meteor->next;
+    Meteor *prev = (Meteor*)meteor->prev;
+    if (next && prev) {
+        next->prev = (struct Meteor*)prev;
+        prev->next = (struct Meteor*)next;
+    }
+    else if (next) {
+        next->prev = (struct Meteor*)NULL;
+    }
+    else if (prev) {
+        meteor->next = (struct Meteor*)NULL;
+    }
+    else {
+        game->meteors = NULL;
+    }
     free(meteor);
 }
 
 void moveMeteor(Game *game, Meteor *meteor) {
-    Meteor *tmp = game->meteors;
-    while (tmp) {
-        if (meteor->x > game->planet->x) meteor->x -= 5;
-        else if (meteor->x < game->planet->x) meteor->x += 5;
-        if (meteor->y > game->planet->y) meteor->y -= 2.5;
-        else if (meteor->y < game->planet->y) meteor->y += 2.5;
-        tmp = (Meteor*)tmp->next;
-    }
+    if (meteor->x > game->planet->x) meteor->x -= 5;
+    else if (meteor->x < game->planet->x) meteor->x += 5;
+    if (meteor->y > game->planet->y) meteor->y -= 2.5;
+    else if (meteor->y < game->planet->y) meteor->y += 2.5;
+
     switch (checkMeteor(game->planet, meteor)) {
         // meteor didn't hit = 0, meteor hit = 1
         case 0:
-            destroyMeteor(meteor);
+            destroyMeteor(game, meteor);
             break;
         case 1: break;
     }
 }
 
 unsigned int updateMeteor(Game *game, unsigned int tickCount) {
+    tickCount = 15;
     Meteor *tmp = game->meteors;
     switch (tickCount) {
         case 15:

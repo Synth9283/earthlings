@@ -20,7 +20,8 @@ void renderPlanet(SDL_Renderer *renderer, Game *game) {
 }
 
 void renderMeteor(SDL_Renderer *renderer, Meteor *meteor) {
-    Meteor *tmp = (struct Meteor*)meteor;
+    if (!meteor) return;
+    Meteor *tmp = meteor;
     while (tmp) {
         switch (tmp->textureCount) {
             case 1:
@@ -37,7 +38,7 @@ void renderMeteor(SDL_Renderer *renderer, Meteor *meteor) {
         SDL_Rect meteorRect = {tmp->x, tmp->y, tmp->w, tmp->h};
         SDL_RenderCopyEx(renderer, tmp->meteorTexture, NULL, &meteorRect, tmp->angle, NULL, 0);
         SDL_FreeSurface(tmp->meteorSurface);
-        tmp = tmp->next;
+        tmp = (Meteor*)tmp->next;
     }
 }
 
