@@ -87,7 +87,6 @@ void moveMeteor(Game *game, Meteor *meteor) {
 }
 
 unsigned int updateMeteor(Game *game, unsigned int tickCount) {
-    tickCount = 15;
     Meteor *tmp = game->meteors;
     switch (tickCount) {
         case 15:
